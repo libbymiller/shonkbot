@@ -38,7 +38,11 @@ AccelStepper rightStepper(AccelStepper::HALF4WIRE, RIGHT_IN1,RIGHT_IN3,RIGHT_IN2
 #define PIEZO_PIN 12                        // Wire a piezo sounder from pin 12 to ground
 #define COLLISION_LED_PIN 13                // Wire IR LED from pin 13 to ground
 #define COLLISION_PHOTOTRANSISTOR_PIN A0    // Wire IR phototransistor from A0 to ground, with a 10k pullup
-#define COLLISION_FREQUENCY 75              // Use 75 hz for collision detection
+
+#define SWARM_FREQUENCY 66
+#define COLLISION_FREQUENCY 75
+
+IRDetector swarmDetector(-1, COLLISION_PHOTOTRANSISTOR_PIN, PIEZO_PIN, SWARM_FREQUENCY);
 
 IRDetector collisionDetector(COLLISION_LED_PIN, COLLISION_PHOTOTRANSISTOR_PIN, PIEZO_PIN, COLLISION_FREQUENCY);
 
@@ -64,6 +68,7 @@ void setup()
   #endif
   
   collisionDetector.setup();
+  swarmDetector.setup();
 
   leftStepper.setMaxSpeed(MAX_SPEED); // 800 is a sensible limit on 5v motor supply, 300 is a sensible limit on 3v.
   leftStepper.setAcceleration(MAX_ACCELERATION); // 1600 on 5v
@@ -78,8 +83,7 @@ void setup()
 void loop()
 {
   collisionDetector.loop();
-  
-  
+  swarmDetector.loop();
   
   //loopScript();
   loopWander();
